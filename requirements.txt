@@ -1,0 +1,6 @@
+qdrant-client
+fastapi
+uvicorn
+sentence-transformers
+rank-bm25
+pydantic
