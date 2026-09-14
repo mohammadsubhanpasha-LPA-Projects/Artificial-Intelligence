@@ -1,0 +1,41 @@
+name: Arthur Governance
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-governance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Trivy FS & Image Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs,image'
+          ignore-unfixed: true
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL'
+
+      - name: OPA Conftest for 12 Knights
+        uses: instrumenta/conftest-action@master
+        with:
+          files: '4-k8s/manifests/'
+          policy: '5-security/knights-policies/'
+
+      - name: Cosign Sign
+        uses: sigstore/cosign-installer@v3
+        with:
+          cosign-release: 'v2.2.0'
+      - run: |
+          cosign sign --key env://COSIGN_PRIVATE_KEY my-registry.io/arthur-excalibur:latest
+
+      - name: Generate SLSA Provenance
+        uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.4.0
+        with:
+          base64-subjects: "${{ hashFiles('4-k8s/manifests/**') }}"
