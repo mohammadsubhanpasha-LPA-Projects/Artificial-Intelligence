@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arthur-excalibur-sovereign
+  labels:
+    app: arthur-excalibur
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: arthur-excalibur
+  template:
+    metadata:
+      labels:
+        app: arthur-excalibur
+    spec:
+      serviceAccountName: arthur-excalibur
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: arthur-excalibur
+        image: gcr.io/distroless/python3-debian12:nonroot
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        resources:
+          requests:
+            memory: "250Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

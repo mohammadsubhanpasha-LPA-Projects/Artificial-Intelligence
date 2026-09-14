@@ -1,0 +1,23 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: arthur-excalibur-skeleton
+  title: Arthur Excalibur Sovereign Plane
+  description: 15 min onboarding, includes 12 knights policies check.
+spec:
+  owner: user:guest
+  type: service
+  parameters:
+    - title: Provide Information
+      required:
+        - name
+      properties:
+        name:
+          title: Name
+          type: string
+  steps:
+    - id: fetch
+      name: Fetch Skeleton
+      action: fetch:template
+      input:
+        url: ./skeleton
