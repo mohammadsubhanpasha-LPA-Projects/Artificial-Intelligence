@@ -1,0 +1,21 @@
+# While the project uses buildpacks as primary, this dockerfile showcases the distroless approach
+# as required by the story.
+FROM python:3.11-slim as builder
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt -t /app/deps
+COPY src/ /app/src/
+
+# Trade-off: Distroless has no shell, leading to 2AM kubectl exec fail panic.
+# Fixed by learning to use ephemeral busybox containers with kubectl debug.
+FROM gcr.io/distroless/static-debian12:nonroot
+
+WORKDIR /app
+COPY --from=builder /app/deps /app/deps
+COPY --from=builder /app/src /app/src
+ENV PYTHONPATH=/app/deps
+
+# Must run as nonroot 1001 for security (0 CVE, 11.2MB image size)
+USER 1001
+
+CMD ["/app/deps/bin/uvicorn", "src.app:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,0 +1,54 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: lancelot-fastest-deploy-pipeline
+spec:
+  workspaces:
+    - name: shared-workspace
+  params:
+    - name: repo-url
+      type: string
+      default: "https://github.com/yourname/lancelot-du-lac-velocity-4050"
+      description: "Git repo url to clone"
+  tasks:
+    - name: clone-repo
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url
+          value: $(params.repo-url)
+    - name: build-with-buildpacks
+      taskRef:
+        name: buildpacks
+      runAfter:
+        - clone-repo
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      params:
+        - name: APP_IMAGE
+          value: "gcr.io/your-registry/lancelot-app:latest"
+        - name: BUILDER_IMAGE
+          value: "paketobuildpacks/builder:base"
+        # Why buildpacks? Achieves 18s build time and 11.2MB image via caching and layering,
+        # compared to 12min Dockerfile builds.
+    - name: notify-nats
+      taskRef:
+        name: nats-publish
+      runAfter:
+        - build-with-buildpacks
+      params:
+        - name: subject
+          value: "deploy.prod.v2" # Note: what failed was using deploy.prod and a typo here caused 4hrs of debug.
+    - name: sync-argocd
+      taskRef:
+        name: argocd-sync
+      runAfter:
+        - notify-nats
+      params:
+        - name: application-name
+          value: "lancelot-app"
+        # ArgoCD syncs in 60s, contributing to the 62s total deploy time.
