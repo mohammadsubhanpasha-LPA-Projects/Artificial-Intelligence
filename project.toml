@@ -1,0 +1,15 @@
+[_]
+schema-version = "0.2"
+
+[build]
+exclude = [".git/", "docs/"]
+
+[[build.env]]
+name = "BP_CPYTHON_VERSION"
+value = "3.11.*"
+# Trade-off fixed: Explicitly pinning to Python 3.11 because without this,
+# it defaulted to 3.10 and caused a crash in prod, costing 2hrs to debug.
+
+[[build.env]]
+name = "BP_KEEP_FILES"
+value = "src/*"

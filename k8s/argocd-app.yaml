@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lancelot-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/yourname/lancelot-du-lac-velocity-4050'
+    path: k8s/manifests
+    targetRevision: HEAD
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: lancelot-prod
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  # Why Argo over Flux? Argo syncs in 60s, while Flux was taking 3min (too slow for our 62s goal).
+  # Trade-off: Argo requires a Redis instance which costs $5 extra.

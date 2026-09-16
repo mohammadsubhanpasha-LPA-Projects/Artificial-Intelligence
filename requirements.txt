@@ -1,8 +1,9 @@
+fastapi
+uvicorn
+# Additional dependencies for quantum/crypto modules
 qiskit==1.0.2
 qiskit-aer==0.14.1
 qiskit-algorithms==0.3.0
 qiskit-optimization==0.6.1
-fastapi
-uvicorn
 pydantic
 cryptography>=42.0.0
