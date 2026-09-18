@@ -1,0 +1,16 @@
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: network-latency
+  namespace: default
+  annotations:
+    chaos.gawain/green-knight: "beheaded but lives"
+spec:
+  engineState: "active"
+  appinfo:
+    appns: "default"
+    applabel: "app=httpbin"
+    appkind: "deployment"
+  chaosServiceAccount: network-latency-sa
+  experiments:
+    - name: network-latency

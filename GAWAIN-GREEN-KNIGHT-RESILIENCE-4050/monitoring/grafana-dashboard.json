@@ -1,0 +1,32 @@
+{
+  "title": "Gawain Green Knight Dashboard",
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Request Rate",
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total[1m])) by (status)"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Failover Events",
+      "targets": [
+        {
+          "expr": "sum(increase(failover_events_total[1h]))"
+        }
+      ]
+    },
+    {
+      "type": "gauge",
+      "title": "RTO",
+      "targets": [
+        {
+          "expr": "rto_duration_milliseconds"
+        }
+      ]
+    }
+  ]
+}

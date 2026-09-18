@@ -1,0 +1,11 @@
+apiVersion: kind.x-k8s.io/v1alpha4
+kind: Cluster
+name: us-east-1
+---
+apiVersion: kind.x-k8s.io/v1alpha4
+kind: Cluster
+name: eu-west-2
+---
+apiVersion: kind.x-k8s.io/v1alpha4
+kind: Cluster
+name: ap-southeast-1
