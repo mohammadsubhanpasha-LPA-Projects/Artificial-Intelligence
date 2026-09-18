@@ -1,0 +1,12 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+  name: istio-ambient
+spec:
+  profile: ambient
+  components:
+    ztunnel:
+      enabled: true
+    waypoint:
+      enabled: true
