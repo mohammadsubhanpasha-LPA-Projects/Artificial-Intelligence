@@ -1,0 +1,11 @@
+{
+  "project": "GAWAIN-GREEN-KNIGHT-RESILIENCE-4050",
+  "resilience_score": 99.999,
+  "rto_ms": 5.2,
+  "uptime_percentage": 99.999,
+  "chaos_experiments": {
+    "total": 12,
+    "passed": 12
+  },
+  "status": "RESILIENT"
+}
